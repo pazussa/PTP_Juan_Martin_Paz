@@ -1,0 +1,39 @@
+# Dependencias
+/node_modules/
+
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/playwright/.auth/
+/.playwright-cli/
+/test-logs/
+
+# Variables de entorno y credenciales
+.env
+.env*.local
+!.env.example
+
+# TypeScript y cobertura
+*.tsbuildinfo
+/coverage/
+
+# Evidencias, inventarios y resultados de ejecución: son registros locales de
+# las corridas, no forman parte del funcionamiento de la suite.
+/evidencias/
+/artifacts/
+
+# IDE y sistema
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.pem
+npm-debug.log*
+
+# Material de trabajo interno: no forma parte de la suite ni de su entrega.
+# CAPSULA.md es la metodología de partida; .claude/ son herramientas locales
+# del asistente usadas para explorar el sitio.
+/CAPSULA.md
+/.claude/

@@ -1,0 +1,41 @@
+{
+  "name": "bon-bonite-playwright-e2e",
+  "version": "1.0.0",
+  "description": "Pruebas end-to-end de Bon-Bonite con Playwright, TypeScript y playwright-cli.",
+  "private": true,
+  "scripts": {
+    "setup": "node scripts/setup.js",
+    "test": "playwright test --project=public-chromium",
+    "test:headed": "playwright test --project=public-chromium --headed --workers=1",
+    "test:fast": "cross-env VIDEO=retain-on-failure SLOWMO=0 playwright test --project=public-chromium --headed --workers=1",
+    "test:debug": "cross-env PLAYWRIGHT_HTML_OPEN=never playwright test --project=public-chromium --headed --workers=1 --debug",
+    "test:smoke": "playwright test --project=public-chromium --grep @smoke",
+    "test:account": "cross-env RUN_MUTATING_TESTS=1 playwright test --project=account-setup --headed --workers=1",
+    "test:purchase": "cross-env RUN_MUTATING_TESTS=1 RUN_PURCHASE_TESTS=1 playwright test --project=purchase-chromium --headed --workers=1",
+    "test:purchase:reconcile": "cross-env RUN_MUTATING_TESTS=1 RUN_PURCHASE_TESTS=1 playwright test --project=purchase-chromium --no-deps --headed --workers=1",
+    "test:client": "cross-env RUN_MUTATING_TESTS=1 RUN_PURCHASE_TESTS=1 playwright test --headed --workers=1",
+    "test:ci": "cross-env CI=1 HEADLESS=1 VIDEO=retain-on-failure playwright test --project=public-chromium --workers=1 --fail-on-flaky-tests",
+    "test:list": "playwright test --list",
+    "typecheck": "tsc --noEmit",
+    "check": "npm run typecheck && npm run test:list",
+    "install:browsers": "playwright install chromium",
+    "report": "playwright show-report",
+    "codegen": "node scripts/codegen.js"
+  },
+  "keywords": [
+    "playwright",
+    "e2e",
+    "bon-bonite"
+  ],
+  "license": "UNLICENSED",
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.62.1",
+    "@types/node": "^26.4.0",
+    "cross-env": "^10.1.0",
+    "dotenv": "^17.4.2",
+    "typescript": "^5.9.3"
+  }
+}

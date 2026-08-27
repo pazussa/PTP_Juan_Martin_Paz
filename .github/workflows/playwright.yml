@@ -1,0 +1,71 @@
+name: Playwright multiplataforma
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: playwright-production-${{ github.repository }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  pruebas-publicas:
+    name: ${{ matrix.os }} / Chromium
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+
+    env:
+      BASE_URL: https://www.bon-bonite.com
+      HEADLESS: '1'
+      VIDEO: retain-on-failure
+      RUN_MUTATING_TESTS: '0'
+      RUN_PURCHASE_TESTS: '0'
+
+    steps:
+      - name: Descargar código
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Instalar dependencias
+        if: runner.os == 'Linux'
+        run: npm ci
+
+      - name: Instalar Chromium y dependencias en Linux
+        if: runner.os == 'Linux'
+        run: npx playwright install --with-deps chromium
+
+      - name: Configurar proyecto con el asistente de Windows
+        if: runner.os == 'Windows'
+        run: .\setup-windows.cmd
+
+      - name: Validar TypeScript y descubrimiento de tests
+        run: npm run check
+
+      - name: Ejecutar suite pública segura
+        run: npm run test:ci
+
+      - name: Publicar reporte y evidencias
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-${{ matrix.os }}
+          path: |
+            playwright-report/
+            test-results/
+          if-no-files-found: ignore
+          retention-days: 14
